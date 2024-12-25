@@ -1,23 +1,17 @@
 import os
 import threading
 from dataclasses import dataclass
-from datetime import datetime
-from pprint import pprint
 import pickle
 from adbutils import adb
 from pynput import keyboard
+
+from autonox.utils import get_timestamp
 
 is_alive = True
 is_capture = True
 f = None
 stream = None
 d = adb.device(transport_id=24) # transport_id can be found in: adb devices -l
-
-
-
-def get_timestamp():
-    return datetime.now().strftime("%Y-%m-%d-%H-%f")
-
 
 output = d.shell("wm size")
 res = output.split()[-1]
