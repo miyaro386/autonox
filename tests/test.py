@@ -35,6 +35,18 @@ class TestCase(unittest.TestCase):
         cv2.imwrite("output_ocr.jpg", ocr_vis)
         cv2.imwrite("output_layout.jpg", layout_vis)
 
+    def test_yomitoku_with_adb(self):
+        from yomitoku import DocumentAnalyzer
+        with Device() as device:
+            img = device.screenshot()
+            analyzer = DocumentAnalyzer(configs={}, visualize=True, device="cuda")
+            results, ocr_vis, layout_vis = analyzer(img)
+
+            results.to_json("output.json")
+            # 可視化画像を保存
+            cv2.imwrite("output_ocr.jpg", ocr_vis)
+            cv2.imwrite("output_layout.jpg", layout_vis)
+
     def test_get_text_position(self):
         img = load_image("../autonox/assets/arknights/img_2024-12-25-17-584374.png")
         text_analyzer = TextAnalyzer()

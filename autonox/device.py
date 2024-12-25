@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from adbutils import adb
-
+import time
 from autonox.utils import get_position_with_image, get_timestamp, check_template_exists
 
 
@@ -11,6 +11,10 @@ class Device:
         self.stream = self.d.shell("getevent -lt /dev/input/event4", stream=True)
         self.f = self.stream.conn.makefile()
         return self
+
+    def click(self, x, y):
+        self.d.click(x, y)
+        time.sleep(0.5)
 
     def screenshot(self):
         pilimg = self.d.screenshot()
@@ -31,7 +35,7 @@ class Device:
         img = self.screenshot()
         template = cv2.imread(template_path)  # テンプレート画像
         x, y = get_position_with_image(img, template)
-        self.d.click(x, y)
+        self.click(x, y)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.f.close()
