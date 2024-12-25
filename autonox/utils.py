@@ -1,4 +1,6 @@
+import time
 from datetime import datetime
+from functools import wraps
 
 
 def init_device():
@@ -30,8 +32,15 @@ def get_position_with_image(img, target, view_result=False):
     y = top_left[1] + h // 2
     return x, y
 
-from functools import wraps
-import time
+
+def check_template_exists(img, target, threshold=0.90):
+    import cv2
+    result = cv2.matchTemplate(img, target, cv2.TM_CCOEFF_NORMED)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+    if max_val > threshold:
+        return True
+    else:
+        return False
 
 
 def retry_decorator(retry_num: int, sleep_sec: int):
@@ -64,7 +73,7 @@ def retry_decorator(retry_num: int, sleep_sec: int):
 
 if __name__ == '__main__':
     import cv2
-    import numpy as np
+
     # 画像を読み込む
     image = cv2.imread('src_img.png')  # 対象画像
     template = cv2.imread('notification.png')  # テンプレート画像

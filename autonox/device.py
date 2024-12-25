@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
 from adbutils import adb
-from autonox.utils import get_position_with_image, retry_decorator, get_timestamp
+
+from autonox.utils import get_position_with_image, get_timestamp, check_template_exists
 
 
 class Device:
@@ -21,7 +22,11 @@ class Device:
         img = self.screenshot()
         cv2.imwrite(path, img)
 
-    @retry_decorator(retry_num=10, sleep_sec=1)
+    def check_template_exists(self, template_path, threshold=0.9):
+        img = self.screenshot()
+        template = cv2.imread(template_path)  # テンプレート画像
+        return check_template_exists(img, template, threshold=threshold)
+
     def tap_with_template(self, template_path):
         img = self.screenshot()
         template = cv2.imread(template_path)  # テンプレート画像
